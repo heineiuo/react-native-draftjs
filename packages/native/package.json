@@ -1,9 +1,8 @@
 {
   "name": "react-native-draftjs",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
-  "dependencies": {},
   "peerDependencies": {
     "react": "^16.4.1",
     "react-native": "^0.55.4",

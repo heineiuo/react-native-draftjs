@@ -1,0 +1,11 @@
+{
+  "lerna": "2.11.0",
+  "useWorkspaces": true,
+  "packages": [
+    "packages/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "0.0.1"
+}
