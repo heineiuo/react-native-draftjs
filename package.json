@@ -1,0 +1,11 @@
+{
+  "name": "react-native-draftjs",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "heineiuo <heineiuo@gmail.com>",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ]
+}

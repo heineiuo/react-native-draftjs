@@ -1,0 +1,6 @@
+node_modules
+.DS_Store
+*.log*
+Thumb.db
+dist
+packages/*/dist

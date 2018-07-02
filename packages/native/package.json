@@ -1,0 +1,16 @@
+{
+  "name": "react-native-draftjs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^16.4.1",
+    "react-native": "^0.55.4",
+    "react-native-svg": "^6.4.1",
+    "react-native-vector-icons": "^4.6.0"
+  },
+  "devDependencies": {
+    "babel-preset-react-native": "^4.0.0"
+  }
+}
