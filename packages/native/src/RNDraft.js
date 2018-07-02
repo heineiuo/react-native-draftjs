@@ -50,6 +50,10 @@ class RNDraft extends React.Component {
 
   }
 
+  static defaultProps = {
+    uri: 'http://localhost:8053/packages/cms-rn-editor/'
+  }
+
   state = {
     rawContentState: createRawContentState()
   }
@@ -138,7 +142,7 @@ class RNDraft extends React.Component {
         onMessage={this.handleMessage}
         onLoad={this.handleLoad}
         source={{
-          uri: 'http://localhost:8053/packages/cms-rn-editor/'
+          uri: this.props.uri
         }}
       />
     )
