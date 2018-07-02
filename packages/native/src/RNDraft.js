@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2018-present, heineiuo.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import React from 'react'
 import {
   // Button,
@@ -16,7 +23,7 @@ import isEqual from 'lodash/isEqual'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import Toolbar from './RNDraftToolbar'
 // import RNDraftHTML from './RNDraftHTML'
-import { generateRandomKey } from './DraftUtils'
+import { generateRandomKey } from './RNDraftUtils'
 
 const isIphoneX = (() => {
   let d = Dimensions.get('window')
