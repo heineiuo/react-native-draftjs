@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "main": "umd/react-native-draftjs-webview.production.js",
   "license": "MIT",
+  "scripts": {
+    "start": "lolla --port=8091",
+    "build": "webpack --config=webpack.prod.js"
+  },
   "devDependencies": {
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -12,6 +16,7 @@
     "draft-js": "^0.10.5",
     "immutable": "^3.8.2",
     "lodash": "^4.17.10",
+    "lolla": "^0.5.3",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1"

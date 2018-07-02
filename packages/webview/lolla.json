@@ -1,0 +1,12 @@
+{
+  "devUnpkgOrigin": "http://localhost:8091",
+  "unpkgOrigin": "https://cdn.jsdelivr.net/npm",
+  "packages": [
+    {
+      "context": "./",
+      "outputDir": "./dist",
+      "entry": "./index.js",
+      "externals": []
+    }
+  ]
+}
