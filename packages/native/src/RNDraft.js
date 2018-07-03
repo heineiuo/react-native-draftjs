@@ -62,12 +62,23 @@ class RNDraft extends React.Component {
   }
 
   state = {
+    blockType: 'unstyled',
+    currentStyle: [],
     rawContentState: createRawContentState()
   }
 
   componentDidUpdate (prevProps, prevState) {
     if (!isEqual(this.state.rawContentState, prevState.rawContentState)) {
       this.postMessage('reload', this.state.rawContentState)
+    }
+  }
+
+  handleToolbarButtonToggle = (e, btn) => {
+    console.log(btn)
+    if (btn.type === 'BLOCK') {
+      this.postMessage('toggleBlockType', { blockType: btn.style })
+    } else if (btn.type === 'INLINE') {
+      this.postMessage('toggleInlineStyle', { inlineStyle: btn.style })
     }
   }
 
@@ -90,13 +101,19 @@ class RNDraft extends React.Component {
       console.log('ready')
       this.postMessage('reload', this.state.rawContentState)
     } else if (type === 'selection') {
-      console.log(`[${new Date()}]${payload}`)
+      const { blockType, currentStyle } = payload
+      this.setState({
+        blockType,
+        currentStyle
+      })
+      console.log(`[${new Date()}]${blockType}`)
     } else {
       console.log('unknown message')
     }
   }
 
   postMessage = (type, payload = {}) => {
+    console.log(`post message to webview: type is ${type}, payload is ${JSON.stringify(payload)}`)
     this.webview.postMessage(JSON.stringify({
       type, payload, id: uuid()
     }), '*')
@@ -120,22 +137,30 @@ class RNDraft extends React.Component {
         >
           {webview}
           <Toolbar
+            onToggle={this.handleToolbarButtonToggle}
+            blockType={this.state.blockType}
+            currentStyle={this.state.currentStyle}
             style={{
               position: 'absolute',
               bottom: 0,
               left: 0,
               right: 0
-            }} />
+            }}
+          />
         </KeyboardAvoidingView>
       </View>
     )
   }
 
-  renderIOS = ({webview}) => {
+  renderIOS = ({ webview }) => {
     return (
       <SafeAreaView style={styles.editor}>
         {webview}
-        <Toolbar />
+        <Toolbar
+          onToggle={this.handleToolbarButtonToggle}
+          blockType={this.state.blockType}
+          currentStyle={this.state.currentStyle}
+        />
         <KeyboardSpacer topSpacing={isIphoneX ? -34 : 0} />
       </SafeAreaView>
     )

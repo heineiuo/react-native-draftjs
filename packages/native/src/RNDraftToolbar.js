@@ -14,43 +14,87 @@ import {
 } from 'react-native'
 import * as Icons from './RNDraftIcons'
 
+const buttons = [
+  {
+    type: 'INLINE',
+    style: 'BOLD',
+    Icon: Icons.Bold
+  },
+  {
+    type: 'INLINE',
+    style: 'ITALIC',
+    Icon: Icons.Italic
+  },
+  {
+    type: 'INLINE',
+    style: 'UNDERLINE',
+    Icon: Icons.Underlined
+  },
+  {
+    type: 'BLOCK',
+    style: 'header-three',
+    Icon: Icons.Header
+  },
+  {
+    type: 'BLOCK',
+    style: 'blockquote',
+    Icon: Icons.QuoteOpen
+  },
+  {
+    type: 'BLOCK',
+    style: 'unordered-list-item',
+    Icon: Icons.ListBulleted
+  },
+  {
+    type: 'BLOCK',
+    style: 'ordered-list-item',
+    Icon: Icons.ListNumbered
+  },
+  {
+    type: 'BLOCK',
+    style: 'code-block',
+    Icon: Icons.Code
+  },
+  {
+    type: 'BLOCK',
+    style: 'IMAGE',
+    Icon: Icons.Image
+  }
+]
+
 class RNDraftToolbar extends React.Component {
   static defaultProps = {
-    style: {}
+    style: {},
+    buttons: buttons
   }
   render () {
+    const { currentStyle, blockType } = this.props
+    console.log(`typeof currentStyle is ${typeof currentStyle}`)
+    console.log(`currentStyle is ${JSON.stringify(currentStyle)}`)
+    console.log([].includes)
     return (
       <View style={[styles.toolbar, this.props.style]} >
         <ScrollView
           horizontal
         >
-          <TouchableOpacity style={styles.button}>
-            <Icons.Bold />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Icons.Italic />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Icons.Underlined />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Icons.Header />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Icons.QuoteOpen />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Icons.ListBulleted />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Icons.ListNumbered />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Icons.Code />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Icons.Image />
-          </TouchableOpacity>
+          {this.props.buttons.map(btn => {
+            const { Icon } = btn
+            const isActive = btn.type === 'BLOCK'
+              ? blockType === btn.style
+              : currentStyle.includes(btn.style)
+            return (
+              <TouchableOpacity
+                key={btn.style}
+                onPress={(e) => this.props.onToggle(e, btn)}
+                style={styles.button}
+              >
+                <Icon
+                  size={30}
+                  color={isActive ? '#88F' : '#333'}
+                />
+              </TouchableOpacity>
+            )
+          })}
         </ScrollView>
       </View>
     )
