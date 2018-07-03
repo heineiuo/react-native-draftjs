@@ -3,7 +3,7 @@
 ![screenshot](./docs/images/react-native-draftjs-screenshot.jpg)
 
 <center>
-<img src="https://cdn.rawgit.com/heineiuo/react-native-draft-js/master/docs/react-native-draftjs-screenshot.jpg" width="300" />
+<img src="https://raw.githubusercontent.com/heineiuo/react-native-draftjs/master/docs/images/react-native-draftjs-screenshot.jpg" width="375" />
 </center>
 
 
