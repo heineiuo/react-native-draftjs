@@ -24,6 +24,7 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import Toolbar from './RNDraftToolbar'
 // import RNDraftHTML from './RNDraftHTML'
 import { generateRandomKey } from './RNDraftUtils'
+import { EventEmitter } from 'events'
 
 const isIphoneX = (() => {
   let d = Dimensions.get('window')
@@ -61,10 +62,14 @@ class RNDraft extends React.Component {
     uri: 'http://localhost:8053/packages/cms-rn-editor/'
   }
 
-  state = {
-    blockType: 'unstyled',
-    currentStyle: [],
-    rawContentState: createRawContentState()
+  constructor (props) {
+    super(props)
+    this.state = {
+      blockType: 'unstyled',
+      currentStyle: [],
+      rawContentState: createRawContentState()
+    }
+    this.emitter = new EventEmitter()
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -73,8 +78,11 @@ class RNDraft extends React.Component {
     }
   }
 
+  componentWillUnmount () {
+    this.emitter.removeAllListeners()
+  }
+
   handleToolbarButtonToggle = (e, btn) => {
-    console.log(btn)
     if (btn.type === 'BLOCK') {
       this.postMessage('toggleBlockType', { blockType: btn.style })
     } else if (btn.type === 'INLINE') {
@@ -83,7 +91,7 @@ class RNDraft extends React.Component {
   }
 
   handleMessage = (e) => {
-    console.log(e.nativeEvent.data)
+    // console.log(e.nativeEvent.data)
     let data = null
     try {
       data = JSON.parse(e.nativeEvent.data)
@@ -93,12 +101,12 @@ class RNDraft extends React.Component {
     if (!data) return false
     const { type, payload, id } = data
     if (type === 'response') {
-      console.log(payload)
       if (!id) {
         return false
       }
+      this.emitter.emit(id + '-data', payload)
     } else if (type === 'ready') {
-      console.log('ready')
+      // console.log('ready')
       this.postMessage('reload', this.state.rawContentState)
     } else if (type === 'selection') {
       const { blockType, currentStyle } = payload
@@ -106,17 +114,27 @@ class RNDraft extends React.Component {
         blockType,
         currentStyle
       })
-      console.log(`[${new Date()}]${blockType}`)
-    } else {
-      console.log('unknown message')
+      // console.log(`[${new Date()}]${blockType}`)
     }
   }
 
-  postMessage = (type, payload = {}) => {
-    console.log(`post message to webview: type is ${type}, payload is ${JSON.stringify(payload)}`)
+  postMessage = (type, payload = {}, id) => {
+    // console.log(`post message to webview: type is ${type}, payload is ${JSON.stringify(payload)}`)
     this.webview.postMessage(JSON.stringify({
-      type, payload, id: uuid()
+      type, payload, id
     }), '*')
+  }
+
+  /**
+   *
+   */
+  getRawContentState = () => {
+    return new Promise((resolve, reject) => {
+      const id = uuid()
+      this.emitter.on(id + '-data', resolve)
+      // this.emitter.on(id + '-error', reject)
+      this.postMessage('getRawContentState', null, id)
+    })
   }
 
   handleLoad = (e) => {

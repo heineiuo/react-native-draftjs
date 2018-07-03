@@ -82,9 +82,9 @@ class RichEditor extends Component {
     } catch (e) { }
     if (!data) return false
     const { type, payload, id } = data
-    const msg = this.state.msg.concat({
-      type, payload, id
-    })
+    // const msg = this.state.msg.concat({
+    //   type, payload, id
+    // })
     let isLoading = this.state.isLoading
     let editorState = this.state.editorState
     if (type === 'isready') {
@@ -96,12 +96,14 @@ class RichEditor extends Component {
       editorState = this.toggleBlockType(payload.blockType)
     } else if (type === 'toggleInlineStyle') {
       editorState = this.toggleInlineStyle(payload.inlineStyle)
+    } else if (type === 'getRawContentState') {
+      this.postMessage('response', convertToRaw(this.state.editorState.getCurrentContent()), id)
     }
 
     this.setState({
       isLoading,
-      editorState,
-      msg
+      editorState
+      // msg
     })
   }
 

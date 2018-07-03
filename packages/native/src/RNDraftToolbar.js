@@ -69,9 +69,6 @@ class RNDraftToolbar extends React.Component {
   }
   render () {
     const { currentStyle, blockType } = this.props
-    console.log(`typeof currentStyle is ${typeof currentStyle}`)
-    console.log(`currentStyle is ${JSON.stringify(currentStyle)}`)
-    console.log([].includes)
     return (
       <View style={[styles.toolbar, this.props.style]} >
         <ScrollView
