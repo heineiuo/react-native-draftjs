@@ -131,8 +131,14 @@ class RNDraft extends React.Component {
   getRawContentState = () => {
     return new Promise((resolve, reject) => {
       const id = uuid()
-      this.emitter.on(id + '-data', resolve)
-      // this.emitter.on(id + '-error', reject)
+      const timer = setTimeout(() => {
+        reject(new Error('Timeout.'))
+        this.emitter.removeListener(id + '-data', resolve)
+      }, 10000)
+      this.emitter.once(id + '-data', (data) => {
+        clearTimeout(timer)
+        resolve(data)
+      })
       this.postMessage('getRawContentState', null, id)
     })
   }
