@@ -126,21 +126,30 @@ class RNDraft extends React.Component {
   }
 
   /**
-   *
+   * @param {string} type
+   * @param {*} payload
    */
-  getRawContentState = () => {
+  postAndReceiveMessage = (type, payload) => {
     return new Promise((resolve, reject) => {
       const id = uuid()
-      const timer = setTimeout(() => {
-        reject(new Error('Timeout.'))
-        this.emitter.removeListener(id + '-data', resolve)
-      }, 10000)
-      this.emitter.once(id + '-data', (data) => {
+      const handler = (data) => {
         clearTimeout(timer)
         resolve(data)
-      })
-      this.postMessage('getRawContentState', null, id)
+      }
+      const timer = setTimeout(() => {
+        reject(new Error('Timeout.'))
+        this.emitter.removeListener(id + '-data', handler)
+      }, 15000)
+      this.emitter.once(id + '-data', handler)
+      this.postMessage(type, payload, id)
     })
+  }
+
+  /**
+   * @return {object} contentState object
+   */
+  getRawContentState = () => {
+    return this.postAndReceiveMessage('getRawContentState', null)
   }
 
   handleLoad = (e) => {
