@@ -55,6 +55,7 @@ class RichEditor extends Component {
 
   componentDidMount () {
     document.addEventListener('message', this.handleMessage)
+    this.addMinHeight()
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -63,6 +64,18 @@ class RichEditor extends Component {
 
   componentWillUnmount () {
     document.removeEventListener('message', this.handleMessage)
+  }
+
+  addMinHeight () {
+    try {
+      const styleEl = document.createElement('style')
+      styleEl.innerText = `
+      .public-DraftEditor-content {
+        min-height: ${window.innerHeight}px;
+      }
+      `
+      document.body.appendChild(styleEl)
+    } catch (e) {}
   }
 
   postMessage = (type, payload = {}, id) => {
@@ -171,6 +184,10 @@ class RichEditor extends Component {
   setEditorState = (editorState) => {
   }
 
+  getEditorRef = ref => {
+    this.editor = ref
+  }
+
   getUrlFromId = (id) => {
     return id
   }
@@ -234,7 +251,7 @@ class RichEditor extends Component {
             onBlur={this.handleBlur}
             onTab={this.handleTab}
             placeholder='添加描述'
-            ref='editor'
+            ref={this.getEditorRef}
           />
         }
       </React.Fragment>
