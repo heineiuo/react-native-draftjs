@@ -85,18 +85,17 @@ class RichEditor extends Component {
     const msg = this.state.msg.concat({
       type, payload, id
     })
-    let isLoading = null
-    let editorState = null
+    let isLoading = this.state.isLoading
+    let editorState = this.state.editorState
     if (type === 'isready') {
-      editorState = this.state.editorState
-      isLoading = this.state.isLoading
       this.postMessage('ready')
     } else if (type === 'reload') {
       editorState = EditorState.createWithContent(convertFromRaw(payload))
       isLoading = false
-    } else {
-      isLoading = this.state.isLoading
-      editorState = this.state.editorState
+    } else if (type === 'toggleBlockType') {
+      editorState = this.toggleBlockType(payload.blockType)
+    } else if (type === 'toggleInlineStyle') {
+      editorState = this.toggleInlineStyle(payload.inlineStyle)
     }
 
     this.setState({
@@ -106,11 +105,35 @@ class RichEditor extends Component {
     })
   }
 
+  toggleBlockType = (blockType) => {
+    return RichUtils.toggleBlockType(
+      this.state.editorState,
+      blockType
+    )
+  }
+
+  toggleInlineStyle = (inlineStyle) => {
+    return RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      inlineStyle
+    )
+  }
+
   handleChange = (editorState) => {
     const prevSelection = this.state.editorState.getSelection()
     const selection = editorState.getSelection()
     if (!isEqual(prevSelection, selection)) {
-      this.postMessage('selection', 'selection change')
+      const currentStyle = editorState.getCurrentInlineStyle()
+      const selection = editorState.getSelection()
+      const blockType = editorState
+        .getCurrentContent()
+        .getBlockForKey(selection.getStartKey())
+        .getType()
+
+      this.postMessage('selection', {
+        currentStyle,
+        blockType
+      })
     }
     this.setState({
       editorState
@@ -187,7 +210,10 @@ class RichEditor extends Component {
 
     if (error) {
       return (
-        <div>{error.message}</div>
+        <React.Fragment>
+          <div>{error.message}</div>
+          <div>{error.stack}</div>
+        </React.Fragment>
       )
     }
 
