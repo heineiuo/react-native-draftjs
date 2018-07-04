@@ -19,7 +19,7 @@ import {
   WebView
 } from 'react-native'
 import uuid from 'uuid/v1'
-import isEqual from 'lodash/isEqual'
+// import isEqual from 'lodash/isEqual'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import Toolbar from './RNDraftToolbar'
 // import RNDraftHTML from './RNDraftHTML'
@@ -48,35 +48,23 @@ const createRawContentState = () => ({
       'depth': 0,
       'inlineStyleRanges': [],
       'entityRanges': [],
-      'data': {}}
+      'data': {}
+    }
   ],
   'entityMap': {}
 })
 
 class RNDraft extends React.Component {
-  static getDerivedPropsFromState (props, state) {
-
-  }
-
   static defaultProps = {
     uri: 'http://localhost:8053/packages/cms-rn-editor/'
   }
 
-  constructor (props) {
-    super(props)
-    this.state = {
-      blockType: 'unstyled',
-      currentStyle: [],
-      rawContentState: createRawContentState()
-    }
-    this.emitter = new EventEmitter()
+  state = {
+    blockType: 'unstyled',
+    currentStyle: []
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    if (!isEqual(this.state.rawContentState, prevState.rawContentState)) {
-      this.postMessage('reload', this.state.rawContentState)
-    }
-  }
+  emitter = new EventEmitter()
 
   componentWillUnmount () {
     this.emitter.removeAllListeners()
@@ -107,7 +95,11 @@ class RNDraft extends React.Component {
       this.emitter.emit(id + '-data', payload)
     } else if (type === 'ready') {
       // console.log('ready')
-      this.postMessage('reload', this.state.rawContentState)
+      if (this.props.defaultValue) {
+        this.postMessage('reload', this.props.defaultValue)
+      } else {
+        this.postMessage('reload', createRawContentState())
+      }
     } else if (type === 'selection') {
       const { blockType, currentStyle } = payload
       this.setState({
@@ -158,7 +150,7 @@ class RNDraft extends React.Component {
 
   renderAndroid = ({ webview }) => {
     return (
-      <View style={styles.editor}>
+      <View style={[styles.editor, this.props.style]}>
         <KeyboardAvoidingView
           enabled
           keyboardVerticalOffset={64 + 44}
@@ -187,7 +179,7 @@ class RNDraft extends React.Component {
 
   renderIOS = ({ webview }) => {
     return (
-      <SafeAreaView style={styles.editor}>
+      <SafeAreaView style={[styles.editor, this.props.style]}>
         {webview}
         <Toolbar
           onToggle={this.handleToolbarButtonToggle}
